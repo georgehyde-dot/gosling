@@ -5,3 +5,4 @@
 4. Add '!' and '?' identifiers, 
     '?' for error handling
     '!' for macros
+5. Support for floats, hex, and octal(maybe)
