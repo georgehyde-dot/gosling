@@ -1,18 +1,31 @@
 package lexer
 
 import (
+	"log"
 	"my_interpreter/token"
+	"os"
 )
 
 type Lexer struct {
-	input        string
+	input        string // file contents in a string
+	fileName     string // Full path to read the next file to lex
+	line         int
 	position     int  // current position in input (points to current char)
 	readPosition int  // current reading position in input (after current char)
 	ch           byte // current char under examination
 }
 
-func New(input string) *Lexer {
-	l := &Lexer{input: input}
+func New(f string) *Lexer {
+	contents, err := os.ReadFile(f)
+	if err != nil {
+		log.Fatalf("failed to open file %s\n", f)
+	}
+	input := string(contents)
+	l := &Lexer{
+		input:    input,
+		fileName: f,
+		line:     0,
+	}
 	l.readChar()
 	return l
 }
@@ -22,6 +35,9 @@ func (l *Lexer) readChar() {
 		l.ch = 0
 	} else {
 		l.ch = l.input[l.readPosition]
+	}
+	if l.ch == byte('\n') {
+		l.line++
 	}
 
 	l.position = l.readPosition
@@ -64,6 +80,7 @@ func (l *Lexer) NextToken() token.Token {
 			return tok
 		} else {
 			tok = newToken(token.ILLEGAL, l.ch)
+			log.Fatalf("illegal token at line: %d char: %d\n", l.line, l.position)
 		}
 	}
 
