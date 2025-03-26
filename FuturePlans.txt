@@ -1,5 +1,3 @@
-1. Use io.Reader for token parsing
-    inlcude line and character numbers in errors
 2. Support Unicode (read runes in lexer, not bytes)
 3. Parse new lines for formatting?  
 4. Add '!' and '?' identifiers, 

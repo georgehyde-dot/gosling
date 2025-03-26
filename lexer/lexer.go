@@ -4,18 +4,24 @@ import (
 	"log"
 	"my_interpreter/token"
 	"os"
+	"path/filepath"
 )
 
 type Lexer struct {
 	input        string // file contents in a string
 	fileName     string // Full path to read the next file to lex
 	line         int
+	lineCh       int  // position of char in the current line
 	position     int  // current position in input (points to current char)
 	readPosition int  // current reading position in input (after current char)
 	ch           byte // current char under examination
 }
 
 func New(f string) *Lexer {
+	if filepath.Ext(f) != ".gos" {
+		// not sure if this is best, but it can work for now
+		return nil
+	}
 	contents, err := os.ReadFile(f)
 	if err != nil {
 		log.Fatalf("failed to open file %s\n", f)
@@ -25,6 +31,7 @@ func New(f string) *Lexer {
 		input:    input,
 		fileName: f,
 		line:     0,
+		lineCh:   0,
 	}
 	l.readChar()
 	return l
@@ -38,10 +45,13 @@ func (l *Lexer) readChar() {
 	}
 	if l.ch == byte('\n') {
 		l.line++
+		l.lineCh = 0
+	} else {
+		l.lineCh++
 	}
 
 	l.position = l.readPosition
-	l.readPosition += 1
+	l.readPosition++
 }
 
 func (l *Lexer) NextToken() token.Token {
@@ -80,7 +90,7 @@ func (l *Lexer) NextToken() token.Token {
 			return tok
 		} else {
 			tok = newToken(token.ILLEGAL, l.ch)
-			log.Fatalf("illegal token at line: %d char: %d\n", l.line, l.position)
+			log.Printf("illegal token at line: %d char: %d\n", l.line, l.lineCh)
 		}
 	}
 
