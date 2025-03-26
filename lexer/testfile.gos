@@ -5,3 +5,11 @@ let add = fn(x, y) {
 };
 
 let result = add(five, ten);
+!-/*5;
+3 < 9 > 2;
+
+if (3 < 9){
+	return true;
+} else {
+	return false;
+}
