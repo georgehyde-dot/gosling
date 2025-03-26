@@ -47,6 +47,35 @@ func TestNextToken(t *testing.T) {
 		{token.IDENT, "ten"},
 		{token.RPAREN, ")"},
 		{token.SEMICOLON, ";"},
+		{token.BANG, "!"},
+		{token.MINUS, "-"},
+		{token.SLASH, "/"},
+		{token.ASTERISK, "*"},
+		{token.INT, "5"},
+		{token.SEMICOLON, ";"},
+		{token.INT, "3"},
+		{token.LT, "<"},
+		{token.INT, "9"},
+		{token.GT, ">"},
+		{token.INT, "2"},
+		{token.SEMICOLON, ";"},
+		{token.IF, "if"},
+		{token.LPAREN, "("},
+		{token.INT, "3"},
+		{token.LT, "<"},
+		{token.INT, "9"},
+		{token.RPAREN, ")"},
+		{token.LBRACE, "{"},
+		{token.RETURN, "return"},
+		{token.TRUE, "true"},
+		{token.SEMICOLON, ";"},
+		{token.RBRACE, "}"},
+		{token.ELSE, "else"},
+		{token.LBRACE, "{"},
+		{token.RETURN, "return"},
+		{token.FALSE, "false"},
+		{token.SEMICOLON, ";"},
+		{token.RBRACE, "}"},
 		{token.EOF, ""},
 	}
 	l := New("./testfile.gos")
@@ -71,7 +100,7 @@ func TestIllegalChar(t *testing.T) {
 		{1, 17},
 		{1, 18},
 	}
-	l := New("./failtestfile.gos")
+	l := New("./testIllegal.gos")
 
 	for i, tt := range tests {
 	inner:
