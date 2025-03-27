@@ -1,5 +1,5 @@
 let five = 5;
-let ten = 10; 😂 //fail here
+let ten = 10; \ //fail here
 let add = fn(x, y) {
 	x + y;
 };

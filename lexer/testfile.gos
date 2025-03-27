@@ -13,3 +13,6 @@ if (3 < 9){
 } else {
 	return false;
 }
+
+five == 5;
+ten != 11;

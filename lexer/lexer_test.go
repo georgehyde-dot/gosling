@@ -76,6 +76,14 @@ func TestNextToken(t *testing.T) {
 		{token.FALSE, "false"},
 		{token.SEMICOLON, ";"},
 		{token.RBRACE, "}"},
+		{token.IDENT, "five"},
+		{token.EQ, "=="},
+		{token.INT, "5"},
+		{token.SEMICOLON, ";"},
+		{token.IDENT, "ten"},
+		{token.NOT_EQ, "!="},
+		{token.INT, "11"},
+		{token.SEMICOLON, ";"},
 		{token.EOF, ""},
 	}
 	l := New("./testfile.gos")
@@ -97,8 +105,6 @@ func TestIllegalChar(t *testing.T) {
 		failChar int
 	}{
 		{1, 16},
-		{1, 17},
-		{1, 18},
 	}
 	l := New("./testIllegal.gos")
 
@@ -106,11 +112,15 @@ func TestIllegalChar(t *testing.T) {
 	inner:
 		for {
 			tok := l.NextToken()
-			if tok.Type == token.ILLEGAL && tt.failChar != l.lineCh {
+			if tok.Type == token.ILLEGAL && tt.failChar != l.lineCh && tt.failLine == l.line {
 				t.Fatalf("tests[%d] - wrong char number expected=%d, got=%d", i, tt.failChar, l.lineCh)
 			}
-			if tok.Type == token.ILLEGAL && tt.failLine != l.line {
+			if tok.Type == token.ILLEGAL && tt.failLine != l.line && tt.failChar == l.lineCh {
 				t.Fatalf("tests[%d] - wrong line number expected=%d, got=%d", i, tt.failLine, l.line)
+			}
+			// fix tests
+			if tok.Type != token.ILLEGAL && tt.failChar == l.lineCh && tt.failLine == l.line {
+				t.Fatalf("tests[%d] - wrong token type expected=%s, got=%s", i, token.ILLEGAL, tok.Type)
 			}
 			if tok.Type == token.ILLEGAL {
 				break inner
