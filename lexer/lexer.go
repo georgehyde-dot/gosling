@@ -17,6 +17,8 @@ type Lexer struct {
 	ch           byte // current char under examination
 }
 
+// I split LexFile, LexRepl, and New out here,
+// but they may be better as one later
 func LexFile(f string) *Lexer {
 	if filepath.Ext(f) != ".gos" {
 		// not sure if this is best, but it can work for now
