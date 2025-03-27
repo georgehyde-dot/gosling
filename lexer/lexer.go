@@ -17,7 +17,7 @@ type Lexer struct {
 	ch           byte // current char under examination
 }
 
-func New(f string) *Lexer {
+func LexFile(f string) *Lexer {
 	if filepath.Ext(f) != ".gos" {
 		// not sure if this is best, but it can work for now
 		return nil
@@ -27,12 +27,23 @@ func New(f string) *Lexer {
 		log.Fatalf("failed to open file %s\n", f)
 	}
 	input := string(contents)
+	l := New(input)
+	l.fileName = f
+	l.readChar()
+	return l
+}
+
+func New(input string) *Lexer {
 	l := &Lexer{
-		input:    input,
-		fileName: f,
-		line:     0,
-		lineCh:   0,
+		input:  input,
+		line:   0,
+		lineCh: 0,
 	}
+	return l
+}
+
+func LexRepl(in string) *Lexer {
+	l := New(in)
 	l.readChar()
 	return l
 }
