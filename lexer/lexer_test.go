@@ -86,7 +86,7 @@ func TestNextToken(t *testing.T) {
 		{token.SEMICOLON, ";"},
 		{token.EOF, ""},
 	}
-	l := New("./testfile.gos")
+	l := LexFile("./testfile.gos")
 
 	for i, tt := range tests {
 		tok := l.NextToken()
@@ -106,7 +106,7 @@ func TestIllegalChar(t *testing.T) {
 	}{
 		{1, 16},
 	}
-	l := New("./testIllegal.gos")
+	l := LexFile("./testIllegal.gos")
 
 	for i, tt := range tests {
 	inner:
