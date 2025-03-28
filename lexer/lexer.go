@@ -1,8 +1,8 @@
 package lexer
 
 import (
+	"gosling/token"
 	"log"
-	"my_interpreter/token"
 	"os"
 	"path/filepath"
 )

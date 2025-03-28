@@ -1,0 +1,10 @@
+Semicolons at the end of expressions and statements
+five = 5;
+
+a single equals sign for assignment
+
+variable = <value>;
+
+Let for variable bindings
+let <identifier> = expression;
+
