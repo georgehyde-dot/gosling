@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"my_interpreter/repl"
+	"gosling/repl"
 	"os"
 	"os/user"
 )

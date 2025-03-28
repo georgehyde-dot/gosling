@@ -3,9 +3,9 @@ package repl
 import (
 	"bufio"
 	"fmt"
+	"gosling/lexer"
+	"gosling/token"
 	"io"
-	"my_interpreter/lexer"
-	"my_interpreter/token"
 )
 
 const PROMPT = "$"

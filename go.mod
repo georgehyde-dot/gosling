@@ -1,3 +1,3 @@
-module my_interpreter
+module gosling
 
-go 1.22.1
+go 1.24.1
