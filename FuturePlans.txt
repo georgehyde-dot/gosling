@@ -5,3 +5,5 @@
     '!' for macros
 5. Support for floats, hex, and octal(maybe)
 6. Try another type of parser (current: top down operator precedence)
+    build my own parser generator
+    build an EBNF specification
