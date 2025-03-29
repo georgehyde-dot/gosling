@@ -7,12 +7,7 @@ import (
 )
 
 func TestLetStatements(t *testing.T) {
-	input := `
-let x = 5;
-let y = 10;
-let foo = 42;`
-
-	l := lexer.New(input)
+	l := lexer.LexFile("./testlet.gos")
 	p := New(l)
 
 	program := p.ParseProgram()
