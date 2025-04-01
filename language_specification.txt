@@ -8,3 +8,5 @@ variable = <value>;
 Let for variable bindings
 let <identifier> = expression;
 
+return statements for passing a value out of a functin
+return <expression>;
