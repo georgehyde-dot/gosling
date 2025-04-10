@@ -7,3 +7,4 @@
 6. Try another type of parser (current: top down operator precedence i.e. Pratt Parsing)
     build my own parser generator
     build an EBNF specification
+7. Add Comments
