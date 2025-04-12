@@ -8,3 +8,4 @@
     build my own parser generator
     build an EBNF specification
 7. Add Comments
+8. have functions return a result type a la Rust
