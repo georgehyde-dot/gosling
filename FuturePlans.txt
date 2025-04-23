@@ -1,6 +1,6 @@
 2. Support Unicode (read runes in lexer, not bytes)
-3. Parse new lines for formatting?  
-4. Add '!' and '?' identifiers, 
+3. Parse new lines for formatting?
+4. Add '!' and '?' identifiers,
     '?' for error handling
     '!' for macros
 5. Support for floats, hex, and octal(maybe)
@@ -9,3 +9,5 @@
     build an EBNF specification
 7. Add Comments
 8. have functions return a result type a la Rust
+    value/error
+9. Add error values
