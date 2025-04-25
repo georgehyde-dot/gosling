@@ -11,3 +11,4 @@
 8. have functions return a result type a la Rust
     value/error
 9. Add error values
+10. Better error messages out of REPL
