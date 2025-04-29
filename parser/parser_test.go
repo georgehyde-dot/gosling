@@ -503,6 +503,49 @@ func TestFunctionParameterParsing(t *testing.T) {
 	}
 }
 
+func TestForExpression(t *testing.T) {
+	input := `for (x < y) { x }`
+	l := lexer.New(input)
+	p := New(l)
+
+	program := p.ParseProgram()
+	checkParserErrors(t, p)
+
+	if len(program.Statements) != 1 {
+		t.Fatalf("program.Statements does not contain %d statements. got=%d\n",
+			1, len(program.Statements))
+	}
+
+	stmt, ok := program.Statements[0].(*ast.ExpressionStatement)
+	if !ok {
+		t.Fatalf("program.Statements[0] is not an ast.ExpressionStatement. got=%T",
+			program.Statements[0])
+	}
+
+	exp, ok := stmt.Expression.(*ast.ForExpression)
+	if !ok {
+		t.Fatalf("stmt.Expression is not an *ast.Expression, got=%T", stmt.Expression)
+	}
+
+	if !testInfixExpression(t, exp.Condition, "x", "<", "y") {
+		return
+	}
+
+	if len(exp.Body.Statements) != 1 {
+		t.Errorf("consequence is not 1 statement, got %d", len(exp.Body.Statements))
+	}
+
+	consequence, ok := exp.Body.Statements[0].(*ast.ExpressionStatement)
+	if !ok {
+		t.Fatalf("exp.Consequence.Statements[0] is not ast.ExpressionStatement. got %T", exp.Body.Statements[0])
+	}
+
+	if !testIdentifier(t, consequence.Expression, "x") {
+		return
+	}
+
+}
+
 func TestParsingInfixExpressions(t *testing.T) {
 	infixTests := []struct {
 		input      string
@@ -632,6 +675,10 @@ func TestOperatorPrecedenceParsing(t *testing.T) {
 		{
 			"!(true == true)",
 			"(!(true == true))",
+		},
+		{
+			"(5 + 2) % 2",
+			"((5 + 2) % 2)",
 		},
 	}
 	for _, tt := range tests {

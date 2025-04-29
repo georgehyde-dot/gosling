@@ -27,6 +27,7 @@ const (
 	SLASH    = "/"
 	EQ       = "=="
 	NOT_EQ   = "!="
+	MOD      = "%"
 
 	LT = "<"
 	GT = ">"
@@ -48,6 +49,7 @@ const (
 	IF       = "IF"
 	ELSE     = "ELSE"
 	RETURN   = "RETURN"
+	FOR      = "FOR"
 )
 
 var keywords = map[string]TokenType{
@@ -58,6 +60,7 @@ var keywords = map[string]TokenType{
 	"return": RETURN,
 	"if":     IF,
 	"else":   ELSE,
+	"for":    FOR,
 }
 
 func LookupIdent(ident string) TokenType {
