@@ -3,9 +3,9 @@ package repl
 import (
 	"bufio"
 	"fmt"
+	"gosling/evaluator"
 	"gosling/lexer"
 	"gosling/parser"
-	"gosling/token"
 	"io"
 )
 
@@ -31,17 +31,17 @@ func Start(in io.Reader, out io.Writer) {
 			continue
 		}
 
-		n, err := io.WriteString(out, program.String())
-		if err != nil {
-			fmt.Printf("error writing to out, %d bytes\n", n)
-		}
-		n, err = io.WriteString(out, "\n")
-		if err != nil {
-			fmt.Printf("error writing to out, %d bytes\n", n)
-		}
+		evaluated := evaluator.Eval(program)
 
-		for tok := l.NextToken(); tok.Type != token.EOF; tok = l.NextToken() {
-			fmt.Fprintf(out, "%+v\n", tok)
+		if evaluated != nil {
+			_, err := io.WriteString(out, evaluated.Inspect())
+			if err != nil {
+				fmt.Print("Failed to write evaluated string")
+			}
+			_, err = io.WriteString(out, "\n")
+			if err != nil {
+				fmt.Print("Failed to write new line")
+			}
 		}
 	}
 }

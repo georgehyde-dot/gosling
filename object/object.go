@@ -2,6 +2,7 @@ package object
 
 import (
 	"fmt"
+	"gosling/lexer"
 )
 
 type ObjectType string
@@ -27,6 +28,7 @@ type Boolean struct {
 
 type Error struct {
 	Value error
+	l     lexer.Lexer
 }
 
 // Integer Methods
@@ -39,5 +41,7 @@ func (b *Boolean) Type() ObjectType { return BOOLEAN_OBJ }
 
 // I'm not doing NULL values, but I will include and error return
 // Error Methods
-func (e *Error) Inspect() error   { return fmt.Errorf("%w", e.Value) }
+func (e *Error) Inspect() error {
+	return fmt.Errorf("file: %s line: %d char: %d %w", e.l.FileName, e.l.Line, e.l.LineCh, e.Value)
+}
 func (e *Error) Type() ObjectType { return ERROR_OBJ }
