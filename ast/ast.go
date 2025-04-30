@@ -94,7 +94,9 @@ type FunctionLiteral struct {
 }
 
 // Program methods
-func (p *Program) Tokenliteral() string {
+func (p *Program) expressionNode() {}
+
+func (p *Program) TokenLiteral() string {
 	if len(p.Statements) > 0 {
 		return p.Statements[0].TokenLiteral()
 	} else {
