@@ -37,9 +37,10 @@ func LexFile(f string) *Lexer {
 
 func New(input string) *Lexer {
 	l := &Lexer{
-		input:  input,
-		Line:   0,
-		LineCh: 0,
+		input:    input,
+		Line:     0,
+		LineCh:   0,
+		FileName: "",
 	}
 	return l
 }

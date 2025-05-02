@@ -20,6 +20,9 @@ func Eval(node ast.Node) object.Object {
 		return &object.Integer{Value: node.Value}
 	case *ast.Boolean:
 		return nativeBoolToBooleanObject(node.Value)
+	case *ast.PrefixExpression:
+		right := Eval(node.Right)
+		return evalPrefixExpression(node.Operator, right, node.Token.Line, node.Token.LineCh, node.Token.Filename)
 	}
 
 	return nil
@@ -33,6 +36,36 @@ func evalStatements(stmts []ast.Statement) object.Object {
 	}
 
 	return result
+}
+
+func evalPrefixExpression(operator string, right object.Object, line int, ch int, file string) object.Object {
+	switch operator {
+	case "!":
+		return evalBangOperatorExpression(right, line, ch, file)
+	default:
+		return &object.Error{
+			Value:    "invalid operation",
+			Line:     line,
+			LineCh:   ch,
+			Filename: file,
+		}
+	}
+}
+
+func evalBangOperatorExpression(right object.Object, line int, ch int, file string) object.Object {
+	switch right {
+	case TRUE:
+		return FALSE
+	case FALSE:
+		return TRUE
+	default:
+		return &object.Error{
+			Value:    "invalid operation",
+			Line:     line,
+			LineCh:   ch,
+			Filename: file,
+		}
+	}
 }
 
 // rather than creating a new instance of the boolean object
