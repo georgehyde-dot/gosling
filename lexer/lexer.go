@@ -38,7 +38,7 @@ func New(input string) *Lexer {
 		input: input,
 		Location: token.TokenLocation{
 			Line:     0,
-			LineCh:   0,
+			LineCh:   1,
 			Filename: "",
 		},
 	}
