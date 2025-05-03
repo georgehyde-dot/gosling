@@ -3,6 +3,7 @@ package evaluator
 import (
 	"gosling/ast"
 	"gosling/object"
+	"gosling/token"
 )
 
 var (
@@ -22,23 +23,24 @@ func Eval(node ast.Node) object.Object {
 		return nativeBoolToBooleanObject(node.Value)
 	case *ast.PrefixExpression:
 		right := Eval(node.Right)
-		return evalPrefixExpression(node.Operator, right, node.Token.Line, node.Token.LineCh, node.Token.Filename)
+		return evalPrefixExpression(node.Operator, right, node.Token.Location)
 
 	default:
 		result, ok := node.(*ast.ExpressionStatement)
 		if !ok {
-			return &object.Error{
-				Value:    "invalid operation",
+			loc := token.TokenLocation{
 				Line:     -1,
 				LineCh:   -1,
 				Filename: "",
 			}
+			return &object.Error{
+				Value:    "invalid operation",
+				Location: loc,
+			}
 		}
 		return &object.Error{
 			Value:    "invalid operation",
-			Line:     result.Token.Line,
-			LineCh:   result.Token.LineCh,
-			Filename: result.Token.Filename,
+			Location: result.Token.Location,
 		}
 	}
 }
@@ -53,23 +55,21 @@ func evalStatements(stmts []ast.Statement) object.Object {
 	return result
 }
 
-func evalPrefixExpression(operator string, right object.Object, line int, ch int, file string) object.Object {
+func evalPrefixExpression(operator string, right object.Object, loc token.TokenLocation) object.Object {
 	switch operator {
 	case "!":
-		return evalBangOperatorExpression(right, line, ch, file)
+		return evalBangOperatorExpression(right, loc)
 	case "-":
-		return evalMinusPrefixOperatorExpression(right, line, ch, file)
+		return evalMinusPrefixOperatorExpression(right, loc)
 	default:
 		return &object.Error{
 			Value:    "invalid operation",
-			Line:     line,
-			LineCh:   ch,
-			Filename: file,
+			Location: loc,
 		}
 	}
 }
 
-func evalBangOperatorExpression(right object.Object, line int, ch int, file string) object.Object {
+func evalBangOperatorExpression(right object.Object, loc token.TokenLocation) object.Object {
 	switch right {
 	case TRUE:
 		return FALSE
@@ -78,20 +78,16 @@ func evalBangOperatorExpression(right object.Object, line int, ch int, file stri
 	default:
 		return &object.Error{
 			Value:    "invalid operation",
-			Line:     line,
-			LineCh:   ch,
-			Filename: file,
+			Location: loc,
 		}
 	}
 }
 
-func evalMinusPrefixOperatorExpression(right object.Object, line int, ch int, file string) object.Object {
+func evalMinusPrefixOperatorExpression(right object.Object, loc token.TokenLocation) object.Object {
 	if right.Type() != object.INTEGER_OBJ {
 		return &object.Error{
 			Value:    "invalid operation",
-			Line:     line,
-			LineCh:   ch,
-			Filename: file,
+			Location: loc,
 		}
 	}
 	value := right.(*object.Integer).Value

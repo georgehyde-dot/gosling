@@ -2,6 +2,7 @@ package object
 
 import (
 	"fmt"
+	"gosling/token"
 )
 
 type ObjectType string
@@ -27,9 +28,7 @@ type Boolean struct {
 
 type Error struct {
 	Value    string
-	Line     int
-	LineCh   int
-	Filename string
+	Location token.TokenLocation
 }
 
 // Integer Methods
@@ -43,6 +42,6 @@ func (b *Boolean) Type() ObjectType { return BOOLEAN_OBJ }
 // I'm not doing NULL values, but I will include an error return
 // Error Methods
 func (e *Error) Inspect() string {
-	return fmt.Sprintf("file: %s line: %d char: %d %s", e.Filename, e.Line, e.LineCh, e.Value)
+	return fmt.Sprintf("file: %s line: %d char: %d %s", e.Location.Filename, e.Location.Line, e.Location.LineCh, e.Value)
 }
 func (e *Error) Type() ObjectType { return ERROR_OBJ }

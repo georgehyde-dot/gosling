@@ -114,7 +114,7 @@ func TestBangOperatorError(t *testing.T) {
 		input    string
 		expected string
 	}{
-		{"!5", fmt.Sprintf("file: %s line: %d char: %d %s", "", 0, 1, "invalid operation")},
+		{"!5", fmt.Sprintf("file: %s line: %d char: %d %s", "", 0, 0, "invalid operation")},
 	}
 	for _, tt := range tests {
 		evaluated := testEval(tt.input)

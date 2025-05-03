@@ -143,14 +143,14 @@ func TestIllegalChar(t *testing.T) {
 	inner:
 		for {
 			tok := l.NextToken()
-			if tok.Type == token.ILLEGAL && tt.failChar != l.LineCh && tt.failLine == l.Line {
-				t.Fatalf("tests[%d] - wrong char number expected=%d, got=%d", i, tt.failChar, l.LineCh)
+			if tok.Type == token.ILLEGAL && tt.failChar != l.Location.LineCh && tt.failLine == l.Location.Line {
+				t.Fatalf("tests[%d] - wrong char number expected=%d, got=%d", i, tt.failChar, l.Location.LineCh)
 			}
-			if tok.Type == token.ILLEGAL && tt.failLine != l.Line && tt.failChar == l.LineCh {
-				t.Fatalf("tests[%d] - wrong line number expected=%d, got=%d", i, tt.failLine, l.Line)
+			if tok.Type == token.ILLEGAL && tt.failLine != l.Location.Line && tt.failChar == l.Location.LineCh {
+				t.Fatalf("tests[%d] - wrong line number expected=%d, got=%d", i, tt.failLine, l.Location.Line)
 			}
 			// fix tests
-			if tok.Type != token.ILLEGAL && tt.failChar == l.LineCh && tt.failLine == l.Line {
+			if tok.Type != token.ILLEGAL && tt.failChar == l.Location.LineCh && tt.failLine == l.Location.Line {
 				t.Fatalf("tests[%d] - wrong token type expected=%s, got=%s", i, token.ILLEGAL, tok.Type)
 			}
 			if tok.Type == token.ILLEGAL {

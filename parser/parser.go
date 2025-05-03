@@ -413,7 +413,7 @@ func (p *Parser) ParseProgram() *ast.Program {
 	program := &ast.Program{}
 	program.Statements = []ast.Statement{}
 
-	if p.curToken.Line == 0 && p.curToken.LineCh == 0 && p.curTokenIs(token.EOF) {
+	if p.curToken.Location.Line == 0 && p.curToken.Location.LineCh == 0 && p.curTokenIs(token.EOF) {
 		p.nextToken()
 	}
 
