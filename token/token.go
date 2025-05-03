@@ -5,6 +5,10 @@ type TokenType string
 type Token struct {
 	Type     TokenType
 	Literal  string
+	Location TokenLocation
+}
+
+type TokenLocation struct {
 	Line     int
 	LineCh   int
 	Filename string
