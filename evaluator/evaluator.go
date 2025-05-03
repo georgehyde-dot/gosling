@@ -23,9 +23,24 @@ func Eval(node ast.Node) object.Object {
 	case *ast.PrefixExpression:
 		right := Eval(node.Right)
 		return evalPrefixExpression(node.Operator, right, node.Token.Line, node.Token.LineCh, node.Token.Filename)
-	}
 
-	return nil
+	default:
+		result, ok := node.(*ast.ExpressionStatement)
+		if !ok {
+			return &object.Error{
+				Value:    "invalid operation",
+				Line:     -1,
+				LineCh:   -1,
+				Filename: "",
+			}
+		}
+		return &object.Error{
+			Value:    "invalid operation",
+			Line:     result.Token.Line,
+			LineCh:   result.Token.LineCh,
+			Filename: result.Token.Filename,
+		}
+	}
 }
 
 func evalStatements(stmts []ast.Statement) object.Object {
@@ -42,6 +57,8 @@ func evalPrefixExpression(operator string, right object.Object, line int, ch int
 	switch operator {
 	case "!":
 		return evalBangOperatorExpression(right, line, ch, file)
+	case "-":
+		return evalMinusPrefixOperatorExpression(right, line, ch, file)
 	default:
 		return &object.Error{
 			Value:    "invalid operation",
@@ -66,6 +83,19 @@ func evalBangOperatorExpression(right object.Object, line int, ch int, file stri
 			Filename: file,
 		}
 	}
+}
+
+func evalMinusPrefixOperatorExpression(right object.Object, line int, ch int, file string) object.Object {
+	if right.Type() != object.INTEGER_OBJ {
+		return &object.Error{
+			Value:    "invalid operation",
+			Line:     line,
+			LineCh:   ch,
+			Filename: file,
+		}
+	}
+	value := right.(*object.Integer).Value
+	return &object.Integer{Value: -value}
 }
 
 // rather than creating a new instance of the boolean object

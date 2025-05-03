@@ -15,14 +15,17 @@ func Start(in io.Reader, out io.Writer) {
 	scanner := bufio.NewScanner(in)
 
 	for {
-		fmt.Fprint(out, PROMPT)
+		_, err := fmt.Fprint(out, PROMPT)
+		if err != nil {
+			fmt.Println("Failed to print prompt")
+		}
 		scanned := scanner.Scan()
 		if !scanned {
 			return
 		}
 
 		line := scanner.Text()
-		l := lexer.LexRepl(line)
+		l := lexer.New(line)
 		p := parser.New(l)
 
 		program := p.ParseProgram()
