@@ -24,7 +24,10 @@ func Eval(node ast.Node) object.Object {
 	case *ast.PrefixExpression:
 		right := Eval(node.Right)
 		return evalPrefixExpression(node.Operator, right, node.Token.Location)
-
+	case *ast.InfixExpression:
+		left := Eval(node.Left)
+		right := Eval(node.Right)
+		return evalInfixExpression(node.Operator, left, right, node.Token.Location)
 	default:
 		result, ok := node.(*ast.ExpressionStatement)
 		if !ok {
@@ -61,6 +64,41 @@ func evalPrefixExpression(operator string, right object.Object, loc token.TokenL
 		return evalBangOperatorExpression(right, loc)
 	case "-":
 		return evalMinusPrefixOperatorExpression(right, loc)
+	default:
+		return &object.Error{
+			Value:    "invalid operation",
+			Location: loc,
+		}
+	}
+}
+
+func evalInfixExpression(operator string, left, right object.Object, loc token.TokenLocation) object.Object {
+	switch {
+	case left.Type() == object.INTEGER_OBJ && right.Type() == object.INTEGER_OBJ:
+		return evalIntegerInfixExpression(operator, left, right, loc)
+	default:
+		return &object.Error{
+			Value:    "invalid operation",
+			Location: loc,
+		}
+	}
+}
+
+func evalIntegerInfixExpression(operator string, left, right object.Object, loc token.TokenLocation) object.Object {
+	leftVal := left.(*object.Integer).Value
+	rightVal := right.(*object.Integer).Value
+
+	switch operator {
+	case "+":
+		return &object.Integer{Value: leftVal + rightVal}
+	case "-":
+		return &object.Integer{Value: leftVal - rightVal}
+	case "/":
+		return &object.Integer{Value: leftVal / rightVal}
+	case "*":
+		return &object.Integer{Value: leftVal * rightVal}
+	case "%":
+		return &object.Integer{Value: leftVal % rightVal}
 	default:
 		return &object.Error{
 			Value:    "invalid operation",
