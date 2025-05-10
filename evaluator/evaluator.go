@@ -76,6 +76,8 @@ func evalInfixExpression(operator string, left, right object.Object, loc token.T
 	switch {
 	case left.Type() == object.INTEGER_OBJ && right.Type() == object.INTEGER_OBJ:
 		return evalIntegerInfixExpression(operator, left, right, loc)
+	case left.Type() == object.BOOLEAN_OBJ && right.Type() == object.BOOLEAN_OBJ:
+		return evalBooleanInfixExpression(operator, left, right, loc)
 	default:
 		return &object.Error{
 			Value:    "invalid operation",
@@ -99,12 +101,38 @@ func evalIntegerInfixExpression(operator string, left, right object.Object, loc 
 		return &object.Integer{Value: leftVal * rightVal}
 	case "%":
 		return &object.Integer{Value: leftVal % rightVal}
+	case "<":
+		return nativeBoolToBooleanObject(leftVal < rightVal)
+	case ">":
+		return nativeBoolToBooleanObject(leftVal > rightVal)
+	case "==":
+		return nativeBoolToBooleanObject(leftVal == rightVal)
+	case "!=":
+		return nativeBoolToBooleanObject(leftVal != rightVal)
 	default:
 		return &object.Error{
 			Value:    "invalid operation",
 			Location: loc,
 		}
 	}
+}
+
+func evalBooleanInfixExpression(operator string, left, right object.Object, loc token.TokenLocation) object.Object {
+	leftVal := left.(*object.Boolean).Value
+	rightVal := right.(*object.Boolean).Value
+
+	switch operator {
+	case "==":
+		return nativeBoolToBooleanObject(leftVal == rightVal)
+	case "!=":
+		return nativeBoolToBooleanObject(leftVal != rightVal)
+	default:
+		return &object.Error{
+			Value:    "invalid operation",
+			Location: loc,
+		}
+	}
+
 }
 
 func evalBangOperatorExpression(right object.Object, loc token.TokenLocation) object.Object {
