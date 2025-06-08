@@ -10,3 +10,7 @@
 8. have functions return a result type a la Rust
     value/error
 10. Better error messages out of REPL
+11. Add pattern matching
+12. Create an LLVM branch
+13. Create and MLIR branch
+14. Create method for if a value exists, for use in conditionals, returns bool
