@@ -130,7 +130,7 @@ func Start(in io.Reader, out io.Writer) {
 		}
 
 		// Handle exit commands
-		if line == "exit" || line == "quit" {
+		if line == "\\exit" || line == "\\quit" {
 			fmt.Printf("\nGoodbye!\n")
 			break
 		}
@@ -178,6 +178,14 @@ func readLineWithHistory(history *CommandHistory) string {
 		case 10: // Line Feed (LF)
 			return line.String()
 		case 127: // Backspace (DEL on Mac)
+			if line.Len() > 0 {
+				current := line.String()
+				line.Reset()
+				if len(current) > 0 {
+					line.WriteString(current[:len(current)-1])
+				}
+				fmt.Printf("\b \b")
+			}
 		case 8: // Backspace (BS)
 			if line.Len() > 0 {
 				current := line.String()
