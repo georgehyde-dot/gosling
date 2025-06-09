@@ -23,3 +23,5 @@ let x == 2;
 for ( x < y ) {
     x = x + 1;
 }
+"foobar"
+"foo bar"
