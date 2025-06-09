@@ -1,8 +1,11 @@
 package object
 
 import (
+	"bytes"
 	"fmt"
+	"gosling/ast"
 	"gosling/token"
+	"strings"
 )
 
 type ObjectType string
@@ -13,6 +16,7 @@ const (
 	ERROR_OBJ        = "ERROR"
 	NULL_OBJ         = "NULL"
 	RETURN_VALUE_OBJ = "RETURN_VALUE"
+	FUNCTION_OBJ     = "FUNCTION"
 )
 
 type Object interface {
@@ -46,6 +50,12 @@ type Environment struct {
 	outer *Environment
 }
 
+type Function struct {
+	Parameters []*ast.Identifier
+	Body       *ast.BlockStatement
+	Env        *Environment
+}
+
 // Integer Methods
 func (i *Integer) Inspect() string  { return fmt.Sprintf("%d", i.Value) }
 func (i *Integer) Type() ObjectType { return INTEGER_OBJ }
@@ -74,20 +84,22 @@ func NewError(message string, location token.TokenLocation) *Error {
 }
 
 // Environment Methods
-func NewEnvironment() *Environment {
-	s := make(map[string]Object)
-	return &Environment{store: s, outer: nil}
-}
 
-func (e *Environment) Get(name string) (Object, bool) {
-	obj, ok := e.store[name]
-	if !ok && e.outer != nil {
-		obj, ok = e.outer.Get(name)
+// Function Methods
+func (f *Function) Type() ObjectType { return FUNCTION_OBJ }
+func (f *Function) Inspect() string {
+	var out bytes.Buffer
+	params := []string{}
+	for _, p := range f.Parameters {
+		params = append(params, p.String())
 	}
-	return obj, ok
-}
 
-func (e *Environment) Set(name string, val Object) Object {
-	e.store[name] = val
-	return val
+	out.WriteString("fn")
+	out.WriteString("(")
+	out.WriteString(strings.Join(params, ", "))
+	out.WriteString(") {\n")
+	out.WriteString(f.Body.String())
+	out.WriteString("\n}")
+
+	return out.String()
 }
