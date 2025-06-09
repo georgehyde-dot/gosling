@@ -5,6 +5,7 @@ import (
 	"gosling/ast"
 	"gosling/object"
 	"gosling/token"
+	"strings"
 )
 
 var (
@@ -73,6 +74,8 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 			return args[0]
 		}
 		return applyFunction(function, args, node.Token.Location)
+	case *ast.StringLiteral:
+		return &object.String{Value: node.Value}
 	default:
 		return object.NewError("unknown node type", token.TokenLocation{
 			Line:     -1,
@@ -162,6 +165,8 @@ func evalInfixExpression(operator string, left, right object.Object, loc token.T
 		return evalIntegerInfixExpression(operator, left, right, loc)
 	case left.Type() == object.BOOLEAN_OBJ && right.Type() == object.BOOLEAN_OBJ:
 		return evalBooleanInfixExpression(operator, left, right, loc)
+	case left.Type() == object.STRING_OBJ && right.Type() == object.STRING_OBJ:
+		return evalStringInfixExpression(operator, left, right, loc)
 	case operator == "==":
 		return nativeBoolToBooleanObject(left == right)
 	case operator == "!=":
@@ -216,6 +221,21 @@ func evalBooleanInfixExpression(operator string, left, right object.Object, loc 
 		return nativeBoolToBooleanObject(leftVal != rightVal)
 	default:
 		return object.NewError(fmt.Sprintf("unknown operator: %s %s %s", object.BOOLEAN_OBJ, operator, object.BOOLEAN_OBJ), loc)
+	}
+}
+
+func evalStringInfixExpression(operator string, left, right object.Object, loc token.TokenLocation) object.Object {
+	leftVal := left.(*object.String).Value
+	rightVal := right.(*object.String).Value
+	switch operator {
+	case "+":
+		return &object.String{Value: leftVal + rightVal}
+	case "==":
+		return nativeBoolToBooleanObject(strings.Compare(leftVal, rightVal) == 0)
+	case "!=":
+		return nativeBoolToBooleanObject(strings.Compare(leftVal, rightVal) != 0)
+	default:
+		return object.NewError(fmt.Sprintf("unknown operator: %s %s %s", object.STRING_OBJ, operator, object.STRING_OBJ), loc)
 	}
 }
 

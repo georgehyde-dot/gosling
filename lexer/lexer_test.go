@@ -115,6 +115,8 @@ func TestNextToken(t *testing.T) {
 		{token.INT, "1"},
 		{token.SEMICOLON, ";"},
 		{token.RBRACE, "}"},
+		{token.STRING, "foobar"},
+		{token.STRING, "foo bar"},
 		{token.EOF, ""},
 	}
 	l := LexFile("./testfile.gos")
