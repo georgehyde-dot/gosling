@@ -261,12 +261,14 @@ func evalMinusPrefixOperatorExpression(right object.Object, loc token.TokenLocat
 }
 
 func evalIdentifier(node *ast.Identifier, env *object.Environment) object.Object {
-	val, ok := env.Get(node.Value)
-	if !ok {
-		return object.NewError(fmt.Sprintf("identifier not found: %s", node.Value), node.Token.Location)
+	if val, ok := env.Get(node.Value); ok {
+		return val
+	}
+	if builtin, ok := builtins[node.Value]; ok {
+		return builtin
 	}
 
-	return val
+	return object.NewError(fmt.Sprintf("identifier not found: %s", node.Value), node.Token.Location)
 }
 
 func evalExpressions(exps []ast.Expression, env *object.Environment) []object.Object {
@@ -291,13 +293,16 @@ func isError(obj object.Object) bool {
 }
 
 func applyFunction(fn object.Object, args []object.Object, loc token.TokenLocation) object.Object {
-	function, ok := fn.(*object.Function)
-	if !ok {
+	switch fn := fn.(type) {
+	case *object.Function:
+		extendedEnv := extendFunctionEnv(fn, args)
+		evaluated := Eval(fn.Body, extendedEnv)
+		return unwrapReturnValue(evaluated)
+	case *object.Builtin:
+		return fn.Fn(args...)
+	default:
 		return object.NewError(fmt.Sprintf("not a function: %s", fn.Type()), loc)
 	}
-	extendedEnv := extendFunctionEnv(function, args)
-	evaluated := Eval(function.Body, extendedEnv)
-	return unwrapReturnValue(evaluated)
 
 }
 
@@ -324,4 +329,8 @@ func nativeBoolToBooleanObject(input bool) *object.Boolean {
 	}
 
 	return FALSE
+}
+
+func newError(format string, a ...interface{}) *object.Error {
+	return &object.Error{Message: fmt.Sprintf(format, a...)}
 }
