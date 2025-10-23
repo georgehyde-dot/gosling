@@ -228,11 +228,19 @@ func clearLineAndRedraw(newText string) {
 }
 
 func startBasicREPL(in io.Reader, out io.Writer, env *object.Environment) {
-	fmt.Fprintf(out, "Gosling REPL (basic mode)\n")
+	_, err := fmt.Fprintf(out, "Gosling REPL (basic mode)\n")
+	if err != nil {
+		fmt.Printf("Failed to start REPL\n")
+		return
+	}
 	scanner := bufio.NewScanner(in)
 
 	for {
-		fmt.Fprint(out, PROMPT)
+		_, err := fmt.Fprint(out, PROMPT)
+		if err != nil {
+			fmt.Printf("Failed to print prompt in REPL\n")
+			return
+		}
 		scanned := scanner.Scan()
 		if !scanned {
 			return
@@ -251,7 +259,12 @@ func startBasicREPL(in io.Reader, out io.Writer, env *object.Environment) {
 		evaluated := evaluator.Eval(program, env)
 
 		if evaluated != nil {
-			fmt.Fprintf(out, "%s\n", evaluated.Inspect())
+			_, err := fmt.Fprintf(out, "%s\n", evaluated.Inspect())
+			if err != nil {
+				fmt.Printf("Failed to print prompt in REPL\n")
+				return
+			}
+
 		}
 	}
 }
